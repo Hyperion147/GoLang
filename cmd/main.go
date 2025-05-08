@@ -1,35 +1,16 @@
 package main
 
-import(
-	"fmt"
-	"errors"
-)
+import ( "fmt" )
 
-func main() {
-	var value string = "Hello another function"
-	anotherFunction(value)
+func main(){
+	var intSlice []int32 = []int32 {2,3,5}
+	var intSlice2 []int32 = []int32 {2,3,5}
+	fmt.Println(intSlice)
+	intSlice = append(intSlice, intSlice2...)
+	fmt.Println(intSlice)
 
-	var num int = 10
-	var den int = 0
-	var result, err = intDivision(num, den)
-	switch result{
-	case 0:
-		 fmt.Println(err.Error())
-	default: 
-			fmt.Printf("\nResult is : %v",result)
-	}
-}
-
-func anotherFunction(value string) {
-	fmt.Println(value)
-}
-
-func intDivision(num int, den int) (int, error) {
-	var err error
-	if den == 0 {
-		err = errors.New("\nError : Denominator Is Zero")
-		return 0, err
-	}
-	var result int = num/den
-	return result, err
+	var intSlice3 []int32 = make([]int32, 3, 6)
+	fmt.Println(intSlice3)
+	intSlice3 = append(intSlice3, 7,8,9)
+	fmt.Println(intSlice3)
 }
