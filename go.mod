@@ -5,7 +5,7 @@ go 1.24.3
 require (
 	github.com/avukadin/goapi v0.0.0-20230822123528-a98a49676213
 	github.com/go-chi/chi v1.5.5
-	github.com/gorilla/schema v1.2.0
+	github.com/gorilla/schema v1.4.1
 	github.com/sirupsen/logrus v1.9.3
 )
 
