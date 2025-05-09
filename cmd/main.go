@@ -1,22 +1,43 @@
 package main
 
-import ( "fmt" )
+import ( 
+	"fmt" 
+	"sync"	
+	"time"
+)
+
+var m = sync.RWMutex{}
+var wg = sync.WaitGroup{}
+var data = []string{"lesgo", "lesgoo", "lesgooo"}
+var result = []string{}
 
 func main(){
-	// var intSlice []int32 = []int32 {2,3,5}
-	// var intSlice2 []int32 = []int32 {2,3,5}
-	// fmt.Println(intSlice)
-	// intSlice = append(intSlice, intSlice2...)
-	// fmt.Println(intSlice)
+	t0 := time.Now()
+	for i:= 0; i<len(data);i++{
+		wg.Add(1)
+		go dataCall(i)
+	}
+	wg.Wait()
+	fmt.Printf("\nTotal Execution time: %v", time.Since(t0))
+	fmt.Printf("\nThe results are: %v", result)
+}
 
-	// var intSlice3 []int32 = make([]int32, 3, 6)
-	// fmt.Println(intSlice3)
-	// intSlice3 = append(intSlice3, 7,8,9)
-	// fmt.Println(intSlice3)
-	
-	var testMap2 = map[string]uint8{"Hello": 42, "Hyper":64}
-	fmt.Println(testMap2["Hello"])
-	fmt.Println(testMap2)
-	delete(testMap2, "Hyper")
-	fmt.Println(testMap2)
+func dataCall(i int){
+	var delay float32 = 2000
+	time.Sleep(time.Duration(delay)*time.Millisecond)
+	save(data[i])
+	log()
+	wg.Done()
+}
+
+func save(results string){
+	m.Lock()
+	result = append(result, results)
+	m.Unlock()
+}
+
+func log(){
+	m.RLock()
+	fmt.Printf("\nThe current results are: %v", result)
+	m.RUnlock()
 }
