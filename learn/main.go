@@ -1,25 +1,22 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 )
 
 func main() {
-	welcome := "This is a simple input for getting discord username"
+	welcome := "This is a program for understanding pointers"
 	fmt.Println(welcome)
+	
+	var ptr *int;
+	fmt.Println("Value of pointer is", ptr)
 
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Enter your discord username:")
-	input, _ := reader.ReadString('\n')
-	fmt.Println("Your username is:", input)
-	increment, err := strconv.ParseFloat(strings.TrimSpace(input), 64)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println("The incremented name is:", increment + 1)
-	}
+	myPtr := 34.5
+	var ptr2 = &myPtr
+	fmt.Println("Value of 2nd pointer is", ptr2)
+	fmt.Println("Value of actual 2nd pointer is", *ptr2)
+
+	*ptr2 = *ptr2 * 2
+	fmt.Println("New value of pointer is", *ptr2)
+
 }
