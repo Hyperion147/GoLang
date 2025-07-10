@@ -2,21 +2,47 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 func main() {
-	welcome := "This is a program for understanding pointers"
+	welcome := "This is a program for understanding array and slices"
 	fmt.Println(welcome)
 	
-	var ptr *int;
-	fmt.Println("Value of pointer is", ptr)
+	var carList [4]string
+	
+	carList[0] = "Honda" 
+	carList[1] = "Toyota"
+	carList[2] = "Suzuki"
+	carList[3] = "Mahindra"
 
-	myPtr := 34.5
-	var ptr2 = &myPtr
-	fmt.Println("Value of 2nd pointer is", ptr2)
-	fmt.Println("Value of actual 2nd pointer is", *ptr2)
+	fmt.Println("Car company list is:", carList)
+	fmt.Println("Car company list is:", len(carList))
 
-	*ptr2 = *ptr2 * 2
-	fmt.Println("New value of pointer is", *ptr2)
+	var cars = []string{"Zonda", "Pagani", "Gamera"}
+	fmt.Printf("%T \n", cars)
+	fmt.Println("Cars are:", cars)
+
+	cars = append(cars, "Maserati", "Regera")
+	fmt.Println("Cars are:", cars)
+
+	cars = append(cars[3:4])
+	fmt.Println("Cars are:", cars)
+
+	highs := make([]int, 4)
+
+	highs[0] = 5
+	highs[1] = 4
+	highs[2] = 3
+	highs[3] = 2
+	fmt.Println("Highs", highs)
+
+	highs = append(highs, 1, 10, 8)
+	fmt.Println("Highs", highs)
+	fmt.Println(sort.IntsAreSorted(highs))
+	
+	sort.Ints(highs)
+	fmt.Println("Sorted highs", highs)
+	fmt.Println(sort.IntsAreSorted(highs))
 
 }
