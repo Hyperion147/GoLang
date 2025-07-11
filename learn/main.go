@@ -5,19 +5,21 @@ import (
 )
 
 func main() {
-	welcome := "This is a program for understanding structs."
+	welcome := "This is a program for understanding functions."
 	fmt.Println(welcome)
 
-	cs2 := Game{"cs2", "pc", 10, true}
-	fmt.Println(cs2)
-	fmt.Printf("CS2 player count: %+v\n", cs2.Players)
-	fmt.Printf("CS2 details: %+v", cs2)
+	added := add(35, 34, 50, 50, 34)
+	fmt.Println(added)
 
 }
 
-type Game struct {
-	Name     string
-	Platform string
-	Players  int
-	Status   bool
+func add(addVar ...int) int {
+	totalVar := 0
+
+	for _, val := range addVar{
+		totalVar += val
+	}
+
+	return totalVar
+
 }
