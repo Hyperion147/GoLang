@@ -2,27 +2,22 @@ package main
 
 import (
 	"fmt"
-	
 )
 
 func main() {
-	welcome := "This is a program for understanding map."
+	welcome := "This is a program for understanding structs."
 	fmt.Println(welcome)
-	
-	people := make(map[string]string)
 
-	people["First"] = "First"
-	people["Second"] = "First2"
-	people["Third"] = "First3"
+	cs2 := Game{"cs2", "pc", 10, true}
+	fmt.Println(cs2)
+	fmt.Printf("CS2 player count: %+v\n", cs2.Players)
+	fmt.Printf("CS2 details: %+v", cs2)
 
-	fmt.Println("People are:", people)
-	
-	delete(people, "Second")
-	
-	fmt.Println("People are:", people)
+}
 
-	for _, personality := range people {
-		fmt.Printf("For person , for peosonality %v \n", personality)
-	}
-
+type Game struct {
+	Name     string
+	Platform string
+	Players  int
+	Status   bool
 }
