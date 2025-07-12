@@ -1,49 +1,74 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
 )
 
-const webUrl = "https://todo.suryansu.pro/auth?hello=hyper"
+// const webUrl = "https://todo.suryansu.pro"
+
+type course struct {
+	Name     string
+	Price    int
+	Platform string
+	Password string   `json:"-"`
+	Tag      []string `json:"tags,omitempty"`
+}
 
 func main() {
-	topic := "This program is to learn web requests."
+	topic := "This program is to handle json."
 	fmt.Println(topic)
 
-	res, err := http.Get(webUrl)
+	EncodeJsonData()
+
+	DecodeJsonData()
+
+}
+
+func EncodeJsonData() {
+	courses := []course{
+		{"React", 0, "Youtube", "123@hyper", []string{"web-dev", "react"}},
+		{"GoLang", 0, "Youtube", "345@hyper", []string{"web-dev", "gofer"}},
+		{"JWT", 0, "Youtube", "678@hyper", nil},
+	}
+
+	courseJson, err := json.MarshalIndent(courses, "", "\t")
 
 	if err != nil {
 		panic(err)
 	}
-	defer res.Body.Close()
 
-	result, _ := url.Parse(webUrl)
+	fmt.Printf("%s\n", courseJson)
 
-	fmt.Println(result.Scheme)
-	fmt.Println(result.RawQuery)
+}
 
-	fmt.Printf("Response: %T\n", res)
-	fmt.Println("Response: ")
+func DecodeJsonData() {
+	jsonData := []byte(`
+        {
+            "Name": "GoLang",
+            "Price": 0,
+            "Platform": "Youtube",
+            "tags": ["web-dev","gofer"]
+        }
+	`)
 
-	data, err := io.ReadAll(res.Body)
+	var courses course 
 
-	if err != nil {
-		panic(err)
+	check := json.Valid(jsonData)
+
+	if check {
+		fmt.Println("JSON is valid")
+		json.Unmarshal(jsonData, &courses)
+		fmt.Printf("%#v\n", courses)
+	} else {
+		fmt.Println("Json is invalid")
 	}
 
-	fmt.Println(string(data))
+	var jsonAdd map[string] interface{}
+	json.Unmarshal(jsonData, &jsonAdd)
 
-	constructUrl := &url.URL{
-		Scheme: "https",
-		Host:   "suryansu.pro",
+	for key, value := range jsonAdd {
+		fmt.Printf("%v, %v, %T\n", key, value, key)
 	}
-
-	constructedUrl := constructUrl.String()
-
-	fmt.Println(constructUrl)
-	fmt.Println(constructedUrl)
 
 }
