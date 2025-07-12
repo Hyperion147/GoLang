@@ -2,24 +2,48 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 )
 
+const webUrl = "https://todo.suryansu.pro/auth?hello=hyper"
+
 func main() {
-	welcome := "This is a program for understanding functions."
-	fmt.Println(welcome)
+	topic := "This program is to learn web requests."
+	fmt.Println(topic)
 
-	added := add(35, 34, 50, 50, 34)
-	fmt.Println(added)
+	res, err := http.Get(webUrl)
 
-}
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
 
-func add(addVar ...int) int {
-	totalVar := 0
+	result, _ := url.Parse(webUrl)
 
-	for _, val := range addVar{
-		totalVar += val
+	fmt.Println(result.Scheme)
+	fmt.Println(result.RawQuery)
+
+	fmt.Printf("Response: %T\n", res)
+	fmt.Println("Response: ")
+
+	data, err := io.ReadAll(res.Body)
+
+	if err != nil {
+		panic(err)
 	}
 
-	return totalVar
+	fmt.Println(string(data))
+
+	constructUrl := &url.URL{
+		Scheme: "https",
+		Host:   "suryansu.pro",
+	}
+
+	constructedUrl := constructUrl.String()
+
+	fmt.Println(constructUrl)
+	fmt.Println(constructedUrl)
 
 }
