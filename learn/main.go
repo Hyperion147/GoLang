@@ -3,72 +3,67 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-// const webUrl = "https://todo.suryansu.pro"
+type User struct {
+	Id     string    `json:"user_id"`
+	Name   string `json:"username"`
+	Device string `json:"user_device"`
+	Admin  *Admin `json:"admin_user"`
+}
 
-type course struct {
-	Name     string
-	Price    int
-	Platform string
-	Password string   `json:"-"`
-	Tag      []string `json:"tags,omitempty"`
+type Admin struct {
+	AdminId   string    `json:"admin_id"`
+	AdminName string `json:"admin_name"`
+}
+
+var users []User
+
+func (u *User) CheckIsEmpty() bool {
+	return u.Name == "" && u.Id == ""
 }
 
 func main() {
-	topic := "This program is to handle json."
+	topic := "This program is to learn router."
 	fmt.Println(topic)
 
-	EncodeJsonData()
+	r := mux.NewRouter()
+	r.HandleFunc("/", metaverseHome).Methods("GET")
+	r.HandleFunc("/users", getAllUsers).Methods("GET")
 
-	DecodeJsonData()
-
-}
-
-func EncodeJsonData() {
-	courses := []course{
-		{"React", 0, "Youtube", "123@hyper", []string{"web-dev", "react"}},
-		{"GoLang", 0, "Youtube", "345@hyper", []string{"web-dev", "gofer"}},
-		{"JWT", 0, "Youtube", "678@hyper", nil},
-	}
-
-	courseJson, err := json.MarshalIndent(courses, "", "\t")
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%s\n", courseJson)
+	log.Fatal(http.ListenAndServe(":3000", r))
 
 }
 
-func DecodeJsonData() {
-	jsonData := []byte(`
-        {
-            "Name": "GoLang",
-            "Price": 0,
-            "Platform": "Youtube",
-            "tags": ["web-dev","gofer"]
-        }
-	`)
+func metaverseHome (w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("<h1>Test api for metaverseTwoDee</h1>"))
+}
 
-	var courses course 
+func getAllUsers (w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Get all users")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
 
-	check := json.Valid(jsonData)
+func getUser (w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Get a user")
+	w.Header().Set("Content-Type", "application/json")
+	
+	params := mux.Vars(r)
+	fmt.Println(params)
+	fmt.Printf("%T",params)
 
-	if check {
-		fmt.Println("JSON is valid")
-		json.Unmarshal(jsonData, &courses)
-		fmt.Printf("%#v\n", courses)
-	} else {
-		fmt.Println("Json is invalid")
+	for _, user := range users{
+		if user.Id == params["id"] {
+			json.NewEncoder(w).Encode(user)
+			return
+		}	
 	}
 
-	var jsonAdd map[string] interface{}
-	json.Unmarshal(jsonData, &jsonAdd)
-
-	for key, value := range jsonAdd {
-		fmt.Printf("%v, %v, %T\n", key, value, key)
-	}
+	json.NewEncoder(w).Encode("No user found with given id.")
 
 }
