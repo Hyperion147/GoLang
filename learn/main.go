@@ -30,17 +30,22 @@ func (u *User) CheckIsEmpty() bool {
 }
 
 func main() {
-	topic := "This program is to learn router."
+	topic := "This program is to learn mux router."
 	fmt.Println(topic)
 
+	users = append(users, User{Id: "1001", Name: "Hyper", Device: "PC", Admin: &Admin{AdminId: "101", AdminName: "Bgs"}})
+	users = append(users, User{Id: "1002", Name: "Hyperion", Device: "PC", Admin: &Admin{AdminId: "102", AdminName: "Dks"}})
+
 	r := mux.NewRouter()
+
 	r.HandleFunc("/", metaverseHome).Methods("GET")
 	r.HandleFunc("/users", getAllUsers).Methods("GET")
-	r.HandleFunc("/user", getUser).Methods("GET")
-	r.HandleFunc("/createuser", createUser).Methods("POST")
+	r.HandleFunc("/user/{id}", getUser).Methods("GET")
+	r.HandleFunc("/user", createUser).Methods("POST")
+	r.HandleFunc("/user/{id}", updateUser).Methods("PUT")
+	r.HandleFunc("/user/{id}", deleteUser).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":3000", r))
-
 }
 
 func metaverseHome(w http.ResponseWriter, r *http.Request) {
@@ -87,9 +92,27 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode("No user data")
 		return
 	}
-
-	user.Id = strconv.Itoa(rand.Intn(100))
-
+	for _, u := range users {
+		if u.Name == user.Name {
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode("Username already taken")
+			return
+		}
+	}
+	for {
+		user.Id = strconv.Itoa(rand.Intn(1000))
+		exists := false
+		for _, u := range users {
+			if u.Id == user.Id {
+				exists = true
+				break
+			}
+		}
+		if !exists {
+			break
+		}
+	}
+	users = append(users, user)
 	json.NewEncoder(w).Encode(user)
 
 }
